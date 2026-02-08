@@ -41,14 +41,8 @@ use librepology::v1::types::Package;
 use librepology::v1::types::Repo;
 
 fn initialize_logging(app: &ArgMatches) -> Result<()> {
-    let verbosity = app
-        .get_occurrences::<String>("verbose")
-        .map(|o| o.count())
-        .unwrap_or(0);
-    let quietness = app
-        .get_occurrences::<String>("quiet")
-        .map(|o| o.count())
-        .unwrap_or(0);
+    let verbosity = app.get_count("verbose") as usize;
+    let quietness = app.get_count("quiet") as usize;
 
     let sum = verbosity as i64 - quietness as i64;
     let mut level_filter = flexi_logger::LevelFilter::Info;
@@ -137,7 +131,7 @@ fn app() -> Result<()> {
             trace!("sort-versions:   {}", mtch.contains_id("sort-version"));
             trace!("sort-repository: {}", mtch.contains_id("sort-repo"));
 
-            let name = if app.contains_id("input_stdin") {
+            let name = if app.get_flag("input_stdin") {
                 // Ugly, but works:
                 // If we have "--stdin" on CLI, we have a CLI/Stdin backend, which means that we can query
                 // _any_ "project", and get the stdin anyways. This is really not like it should be, but
@@ -238,7 +232,7 @@ fn app() -> Result<()> {
 
         Some((other, _mtch)) => {
             debug!("Subcommand: {}", other);
-            app.contains_id("input_stdin")
+            app.get_flag("input_stdin")
                 .as_result((), format_err!("Input not from stdin"))
                 .and_then(|_| {
                     // Ugly, but works:

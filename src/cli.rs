@@ -18,16 +18,14 @@ pub fn build_cli() -> Command {
         .arg(Arg::new("verbose")
                  .long("verbose")
                  .short('v')
-                 .required(false)
-                 .num_args(0)
+                 .action(clap::ArgAction::Count)
                  .help("Increase verbosity. Default = Info, -v = Debug, -vv = Trace")
         )
 
         .arg(Arg::new("quiet")
             .long("quiet")
             .short('q')
-            .required(false)
-            .num_args(0)
+            .action(clap::ArgAction::Count)
             .help("Decrease verbosity. Default = Info, -q = Warn, -qq = Error")
         )
 
@@ -44,8 +42,7 @@ pub fn build_cli() -> Command {
         .arg(Arg::new("input_stdin")
             .long("stdin")
             .short('I')
-            .required(false)
-            .num_args(0)
+            .action(clap::ArgAction::SetTrue)
             .help("Read data (JSON) from stdin.")
         )
 
