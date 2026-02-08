@@ -128,8 +128,8 @@ fn app() -> Result<()> {
     match app.subcommand() {
         Some(("project", mtch)) => {
             debug!("Subcommand: 'project'");
-            trace!("sort-versions:   {}", mtch.contains_id("sort-version"));
-            trace!("sort-repository: {}", mtch.contains_id("sort-repo"));
+            trace!("sort-versions:   {}", mtch.get_flag("sort-version"));
+            trace!("sort-repository: {}", mtch.get_flag("sort-repo"));
 
             let name = if app.get_flag("input_stdin") {
                 // Ugly, but works:
@@ -148,11 +148,11 @@ fn app() -> Result<()> {
                     .into_iter()
                     .filter(|package| repository_filter.filter(package.repo()));
 
-                if mtch.contains_id("sort-version") {
+                if mtch.get_flag("sort-version") {
                     trace!("Sorting by version");
                     iter.sorted_by(|a, b| Ord::cmp(a.version(), b.version()))
                         .collect()
-                } else if mtch.contains_id("sort-repo") {
+                } else if mtch.get_flag("sort-repo") {
                     trace!("Sorting by repository");
                     iter.sorted_by(|a, b| Ord::cmp(a.repo(), b.repo()))
                         .collect()
@@ -162,8 +162,8 @@ fn app() -> Result<()> {
                 }
             };
 
-            let packages = if mtch.contains_id("latest") {
-                if mtch.contains_id("semver") {
+            let packages = if mtch.get_flag("latest") {
+                if mtch.get_flag("semver") {
                     let comp = |a: &Package, b: &Package| {
                         let av = SemverVersion::parse(a.version());
                         let bv = SemverVersion::parse(b.version());
